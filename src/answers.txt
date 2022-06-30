@@ -1,0 +1,9 @@
+write
+speak
+media
+quote
+reads
+words
+print
+photo
+mason
