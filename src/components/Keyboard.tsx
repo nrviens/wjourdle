@@ -5,7 +5,7 @@ import Key from "./Key";
 
 export default function Keyboard() {
 
-  const {onEnter, onDelete, onSelectLetter, disabledLetters, currAttempt} = useContext(AppContext);
+  const {onEnter, onDelete, onSelectLetter, almostLetters, correctLetters, disabledLetters, currAttempt} = useContext(AppContext);
 
   const handleKeyboard = useCallback((event: {key: string}) => {
     if (event.key === 'Enter') {
@@ -42,18 +42,18 @@ export default function Keyboard() {
     <div className='keyboard' onKeyDown={handleKeyboard}>
       <div className='line1'>
         {keys1.map(key => (
-          <Key keyVal={key} key={key} disabled={disabledLetters.includes(key)}/>
+          <Key keyVal={key} key={key} disabled={disabledLetters.includes(key)} almost={almostLetters.includes(key)} correct={correctLetters.includes(key)} />
         ))}
       </div>
       <div className='line1'>
         {keys2.map(key => (
-          <Key keyVal={key} key={key} disabled={disabledLetters.includes(key)}/>
+          <Key keyVal={key} key={key} disabled={disabledLetters.includes(key)} almost={almostLetters.includes(key)} correct={correctLetters.includes(key)} />
         ))}
       </div>
       <div className='line1'>
         <Key keyVal='ENTER' bigKey />
         {keys3.map(key => (
-          <Key keyVal={key} key={key} disabled={disabledLetters.includes(key)}/>
+          <Key keyVal={key} key={key} disabled={disabledLetters.includes(key)} almost={almostLetters.includes(key)} correct={correctLetters.includes(key)} />
         ))}
         <Key keyVal='DELETE' bigKey />
       </div>

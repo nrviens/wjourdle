@@ -5,9 +5,11 @@ interface Props {
   keyVal: string;
   bigKey?: boolean;
   disabled?: boolean;
+  almost?: boolean;
+  correct?: boolean;
 }
 
-export default function Key({keyVal, bigKey, disabled}: Props) {
+export default function Key({keyVal, bigKey, almost, correct, disabled}: Props) {
   const {
     onDelete,
     onSelectLetter,
@@ -29,7 +31,7 @@ export default function Key({keyVal, bigKey, disabled}: Props) {
   }
 
   return (
-    <div className='key' id={bigKey ? 'big' : disabled ? 'disabled' : undefined} onClick={selectLetter}>
+    <div className='key' id={bigKey ? 'big' : disabled ? 'disabled' : correct ? 'correct' : almost ? 'almost' : undefined} onClick={selectLetter}>
       {keyVal}
     </div>
   )
