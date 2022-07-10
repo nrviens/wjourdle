@@ -164,6 +164,12 @@ nav h1 {
   background-color: #3a393c;
 }
 
+.share-results {
+  padding: 6px;
+  font-family: 'metropolisbold', 'Montserrat', sans-serif;
+  
+}
+
 
 
 @media screen and (max-width: 800px) {
@@ -190,7 +196,7 @@ nav h1 {
   .board {
     width: 80%;
     height: 40%;
-    border: 1px solid black;
+    border: 1px solid rgb(19,29,91);
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -241,9 +247,9 @@ nav h1 {
   
 
   .key {
-    width: 28px;
+    width: 30px;
     height: 70px;
-    margin: 5px;
+    margin: 3px;
     border-radius: 4px;
     display: -ms-grid;
     display: grid;

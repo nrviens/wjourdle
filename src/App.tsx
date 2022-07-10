@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Board from './components/Board';
 import Keyboard from './components/Keyboard';
-import { boardDefault, generateWordSet, letterPositions } from './helpers/words';
+import { boardDefault, generateWordSet, letterPositions, sessionStartDate } from './helpers/words';
 import GameOver from './components/GameOver';
 
 export const AppContext = createContext<{
@@ -23,6 +23,10 @@ export const AppContext = createContext<{
   correctWord: string,
   disabledLetters: string[],
   setDisabledLetters: React.Dispatch<React.SetStateAction<string[]>>,
+  correctLetters: string[],
+  setCorrectLetters: React.Dispatch<React.SetStateAction<string[]>>,
+  almostLetters: string[],
+  setAlmostLetters: React.Dispatch<React.SetStateAction<string[]>>,
   gameOver: {gameOver: boolean, guessedWord: boolean},
   setGameOver: React.Dispatch<React.SetStateAction<{
     gameOver: boolean;
@@ -39,6 +43,10 @@ export const AppContext = createContext<{
   correctWord: '',
   disabledLetters: [],
   setDisabledLetters: () => {},
+  correctLetters: [],
+  setCorrectLetters: () => {},
+  almostLetters: [],
+  setAlmostLetters: () => {},
   gameOver: {gameOver: false, guessedWord: false},
   setGameOver: () => {}
 });
@@ -48,6 +56,8 @@ function App() {
   const [currAttempt, setCurrAttempt] = useState({attempt: 0, letterPosition: 0});
   const [wordSet, setWordSet] = useState(new Set());
   const [disabledLetters, setDisabledLetters] = useState<string[]>([]);
+  const [correctLetters, setCorrectLetters] = useState<string[]>([]);
+  const [almostLetters, setAlmostLetters] = useState<string[]>([]);
   const [gameOver, setGameOver] = useState({gameOver: false, guessedWord: false})
 
   const [correctWord, setCorrectWord] = useState('');
@@ -59,7 +69,9 @@ function App() {
       if(wjourdleDay !== null) {
         if(lastPlayDate !== null) {
           if(lastPlayDate !== `${new Date().getDate()}`) {
-            window.localStorage.setItem("wjourdle_day", `${parseInt(wjourdleDay, 10) + 1}`)
+            window.localStorage.setItem("wjourdle_start_date", new Date(sessionStartDate).toString());
+            const numberOfDays = Math.floor(Math.abs(new Date().valueOf() - new Date(sessionStartDate).valueOf()) / 8.64e7);
+            window.localStorage.setItem("wjourdle_day", `${numberOfDays}`);
           } else {
             const gameOverItem = window.localStorage.getItem("wjourdle_game_over");
             if(gameOverItem) {
@@ -69,6 +81,16 @@ function App() {
             if(boardAttemptItem) {
               setBoard(JSON.parse(boardAttemptItem))
             }
+            const wjourdleCorrectWord = window.localStorage.getItem("wjourdle_correct_word");
+            if(wjourdleCorrectWord) {
+              setCorrectWord(wjourdleCorrectWord)
+            }
+            const currentAttempt = window.localStorage.getItem("wjourdle_current_attempt");
+            if(currentAttempt) {
+              const previousAttempt = JSON.parse(currentAttempt);
+              setCurrAttempt({...previousAttempt, attempt: previousAttempt.attempt + 1});
+            }
+
             // const gamesWonItem = window.localStorage.getItem("wjourdle_games_won");
             // if(gamesWonItem) {
             //   setGameOver(JSON.parse(gamesWonItem))
@@ -81,7 +103,9 @@ function App() {
         }
 
       } else {
-        window.localStorage.setItem("wjourdle_day", '0');
+        window.localStorage.setItem("wjourdle_start_date", new Date(sessionStartDate).toString());
+        const numberOfDays = Math.floor(Math.abs(new Date().valueOf() - new Date(sessionStartDate).valueOf()) / 8.64e7);
+        window.localStorage.setItem("wjourdle_day", `${numberOfDays}`);
         window.localStorage.setItem("wjourdle_games_won", '0');
         window.localStorage.setItem("wjourdle_games_played", '0');
         window.localStorage.setItem("wjourdle_last_play_date", `${new Date().getDate()}`);
@@ -112,11 +136,21 @@ function App() {
       window.localStorage.setItem("wjourdle_board_attempt", `${JSON.stringify(board)}`);
       window.localStorage.setItem("wjourdle_games_won", `${parseInt(window.localStorage.getItem("wjourdle_games_won") ?? '0') + 1}`)
       window.localStorage.setItem("wjourdle_games_played", `${parseInt(window.localStorage.getItem("wjourdle_games_played") ?? '0') + 1}`)
+      window.localStorage.setItem("wjourdle_last_play_date", `${new Date().getDate()}`);
+      window.localStorage.setItem("wjourdle_correct_word", `${correctWord}`);
+      window.localStorage.setItem("wjourdle_current_attempt", `${JSON.stringify(currAttempt)}`);
       return;
     }
 
     if (currAttempt.attempt === 5) {
       setGameOver({ gameOver: true, guessedWord: false });
+      window.localStorage.setItem("wjourdle_game_over", `${JSON.stringify({ gameOver: true, guessedWord: false })}`);
+      window.localStorage.setItem("wjourdle_board_attempt", `${JSON.stringify(board)}`);
+      window.localStorage.setItem("wjourdle_games_won", `${parseInt(window.localStorage.getItem("wjourdle_games_won") ?? '0') }`)
+      window.localStorage.setItem("wjourdle_games_played", `${parseInt(window.localStorage.getItem("wjourdle_games_played") ?? '0')}`)
+      window.localStorage.setItem("wjourdle_last_play_date", `${new Date().getDate()}`);
+      window.localStorage.setItem("wjourdle_correct_word", `${correctWord}`);
+      window.localStorage.setItem("wjourdle_current_attempt", `${JSON.stringify(currAttempt)}`);
       return;
     }
   };
@@ -239,6 +273,10 @@ function App() {
         correctWord, 
         disabledLetters, 
         setDisabledLetters,
+        correctLetters,
+        setCorrectLetters,
+        almostLetters,
+        setAlmostLetters,
         gameOver,
         setGameOver
         }}

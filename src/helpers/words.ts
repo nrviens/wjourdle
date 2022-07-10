@@ -16,15 +16,20 @@ export const keys1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
 export const keys2 = ['A','S','D','F','G','H','J','K','L'];
 export const keys3 = ['Z','X','C','V','B','N','M'];
 
+export const sessionStartDate = '07/09/2022 12:00:01 AM';
+
 export const generateWordSet = async () => {
   let todaysWord = '';
   await fetch(answers)
   .then((response) => response.text())
   .then((result) => {
     const wordArr = result.split('\n');
-    const dayValue = window.localStorage.getItem("wjourdle_day");
+
+    const numberOfDays = Math.floor(Math.abs(new Date().valueOf() - new Date(sessionStartDate).valueOf()) / 8.64e7);
+    
+    const dayValue = numberOfDays;
     if(dayValue) {
-      todaysWord = wordArr[parseInt(dayValue, 10) % wordArr.length];
+      todaysWord = wordArr[numberOfDays % wordArr.length];
     } else {
       todaysWord = wordArr[0];
     }
